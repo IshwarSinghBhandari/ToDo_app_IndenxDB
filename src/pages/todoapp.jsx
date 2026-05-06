@@ -4,8 +4,7 @@ import TaskModal from "../../components/TaskModal";
 function todoapp() {
   const [searchTerm, setSearchTerm] = useState("");
   const [createTask, setCreateTask] = useState();
-  const [taskList,setTaskList] = useState({})
-console.log("tasks = ", taskList)
+  const [taskList,setTaskList] = useState([])
 
 useEffect(()=>{
     const request = indexedDB.open("TodoDB", 1);
@@ -24,6 +23,7 @@ useEffect(()=>{
     };
   };
 },[])
+console.log("tasks = ", taskList)
 
   const handleCreatetask = () => {
     if (searchTerm.trim() === "") {
