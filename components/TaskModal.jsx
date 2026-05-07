@@ -13,17 +13,17 @@ function TaskModal({ title, setTask, getData }) {
       time: Date.now(),
     };
 
-
-
-  await createTask(taskData)
+    await createTask(taskData);
 
     await getData();
+    
     document.getElementById("todomodel").style.display = "none";
   }
 
   function onClose() {
     document.getElementById("todomodel").style.display = "none";
   }
+
   return (
     <div
       id="todomodel"

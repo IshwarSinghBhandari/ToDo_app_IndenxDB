@@ -8,16 +8,14 @@ function todoapp() {
   const [taskList, setTaskList] = useState([]);
 
   // show data------
-const getData = async () => {
-  const tasks = await loadTasks();
-  setTaskList(tasks);
-};
+  const getData = async () => {
+    const tasks = await loadTasks();
+    setTaskList(tasks);
+  };
 
-useEffect(() => {
-  getData();
-}, []);
-
-
+  useEffect(() => {
+    getData();
+  }, []);
 
   console.log("tasks = ", taskList);
 
@@ -67,7 +65,13 @@ useEffect(() => {
             </button>
           </div>
         </div>
-        {createTask && <TaskModal title={searchTerm} setTask={setSearchTerm} getData={getData} />}
+        {createTask && (
+          <TaskModal
+            title={searchTerm}
+            setTask={setSearchTerm}
+            getData={getData}
+          />
+        )}
 
         <div className="flex flex-wrap gap-2 mt-6">
           {taskList?.map((data) => {
