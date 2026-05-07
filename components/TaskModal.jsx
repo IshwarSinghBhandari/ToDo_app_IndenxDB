@@ -1,10 +1,11 @@
 import { X } from "lucide-react";
 import React, { useState } from "react";
+import { createTask } from "../indexDB";
 
-function TaskModal({ title, setTask }) {
+function TaskModal({ title, setTask, getData }) {
   const [description, setDescription] = useState("");
 
-  function handleCreateTask() {
+  async function handleCreateTask() {
     const taskData = {
       id: Date.now(),
       taskName: title,
@@ -12,28 +13,12 @@ function TaskModal({ title, setTask }) {
       time: Date.now(),
     };
 
-    const request = indexedDB.open("TodoDB", 1);
-    request.onupgradeneeded = (e) => {
-      const db = e.target.result;
 
-      db.createObjectStore("tasks", {
-        keyPath: "id",
-      });
-    };
-    request.onsuccess = (e) => {
-      const db = e.target.result;
 
-      const tx = db.transaction("tasks", "readwrite");
+  await createTask(taskData)
 
-      const store = tx.objectStore("tasks");
-
-      store.add(taskData);
-
-      console.log("Data Added");
-    };
-
-        document.getElementById("todomodel").style.display = "none";
-
+    await getData();
+    document.getElementById("todomodel").style.display = "none";
   }
 
   function onClose() {

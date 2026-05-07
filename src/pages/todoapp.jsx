@@ -1,39 +1,46 @@
 import React, { useEffect, useState } from "react";
 import TaskModal from "../../components/TaskModal";
+import { loadTasks } from "../../indexDB";
 
 function todoapp() {
   const [searchTerm, setSearchTerm] = useState("");
   const [createTask, setCreateTask] = useState();
-  const [taskList,setTaskList] = useState([])
+  const [taskList, setTaskList] = useState([]);
 
-useEffect(()=>{
-    const request = indexedDB.open("TodoDB", 1);
+  // show data------
+const getData = async () => {
+  const tasks = await loadTasks();
+  setTaskList(tasks);
+};
 
-  request.onsuccess = (e) => {
-    const db = e.target.result;
+useEffect(() => {
+  getData();
+}, []);
 
-    // readonly transaction
-    const tx = db.transaction("tasks", "readonly");
-    // store access
-    const store = tx.objectStore("tasks");
-    // sara data lena
-    const data = store.getAll();
-    data.onsuccess = () => {
-     setTaskList(data.result);
-    };
-  };
-},[])
-console.log("tasks = ", taskList)
+
+
+  console.log("tasks = ", taskList);
 
   const handleCreatetask = () => {
     if (searchTerm.trim() === "") {
-      alert("Please enter a task");
+      // alert("Please enter a task");
       return;
     }
     setCreateTask(true);
     document.getElementById("todomodel").style.display = "flex";
     console.log("Task Created");
   };
+
+  const dotColors = [
+    "#C084FC",
+    "#60A5FA",
+    "#34D399",
+    "#FBBF24",
+    "#FB7185",
+    "#22D3EE",
+    "#A78BFA",
+    "#F472B6",
+  ];
 
   return (
     <div className="min-h-[80vh]  flex flex-col items-center justify-center p-6">
@@ -60,13 +67,30 @@ console.log("tasks = ", taskList)
             </button>
           </div>
         </div>
-        {createTask && (
-          // <diiv className='w-full mt-6 border-t-2 pt-4 flex justify-between'>
-          //     <p>{searchTerm}</p>
-          //     <p>delete</p>
-          // </diiv>\
-          <TaskModal title={searchTerm} setTask={setSearchTerm} />
-        )}
+        {createTask && <TaskModal title={searchTerm} setTask={setSearchTerm} getData={getData} />}
+
+        <div className="flex flex-wrap gap-2 mt-6">
+          {taskList?.map((data) => {
+            return (
+              <div
+                key={data.id}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-sm cursor-pointer transition-all hover:opacity-80 text-white"
+                style={{
+                  backgroundColor: dotColors[data.id % dotColors.length] + "90",
+                  border: `1px solid ${dotColors[data.id % dotColors.length]}40`,
+                }}
+              >
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{
+                    backgroundColor: dotColors[data.id % dotColors.length],
+                  }}
+                />
+                {data.taskName}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
